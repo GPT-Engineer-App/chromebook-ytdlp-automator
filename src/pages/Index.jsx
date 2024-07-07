@@ -51,10 +51,18 @@ const Index = () => {
   };
 
   useEffect(() => {
-    // Fetch active tabs using Chrome Tabs API
-    chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
-      setTabs(tabs);
-    });
+    // Mock chrome.tabs.query for development
+    if (typeof chrome !== "undefined" && chrome.tabs) {
+      chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+        setTabs(tabs);
+      });
+    } else {
+      // Mock data for development
+      setTabs([
+        { id: 1, url: "https://www.youtube.com/watch?v=example1", title: "Example Video 1" },
+        { id: 2, url: "https://www.youtube.com/watch?v=example2", title: "Example Video 2" },
+      ]);
+    }
   }, []);
 
   return (
