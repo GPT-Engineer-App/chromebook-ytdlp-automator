@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
+import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 
 const Index = () => {
@@ -100,7 +101,7 @@ const Index = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md mb-4">
         <CardHeader>
           <CardTitle>Download YouTube Videos</CardTitle>
           {mutation.isLoading && <Progress value={progress} />}
@@ -170,26 +171,38 @@ const Index = () => {
               />
             </div>
           </div>
-          <div className="mt-4">
-            <Label>Running Downloads</Label>
-            <ul>
-              {runningDownloads.map((download, index) => (
-                <li key={index}>{download}</li>
-              ))}
-            </ul>
-          </div>
-          <div className="mt-4">
-            <Label>Download History</Label>
-            <ul>
-              {downloadHistory.map((history, index) => (
-                <li key={index}>{history.url}</li>
-              ))}
-            </ul>
-          </div>
         </CardContent>
         <CardFooter>
           {message && <p>{message}</p>}
         </CardFooter>
+      </Card>
+
+      <Card className="w-full max-w-md mb-4">
+        <CardHeader>
+          <CardTitle>Running Downloads</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ul>
+            {runningDownloads.map((download, index) => (
+              <li key={index}>{download}</li>
+            ))}
+          </ul>
+        </CardContent>
+      </Card>
+
+      <Separator className="my-4" />
+
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle>Download History</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ul>
+            {downloadHistory.map((history, index) => (
+              <li key={index}>{history.url}</li>
+            ))}
+          </ul>
+        </CardContent>
       </Card>
     </div>
   );
