@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
+import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 
 const Index = () => {
@@ -12,6 +13,14 @@ const Index = () => {
   const [message, setMessage] = useState("");
   const [tabs, setTabs] = useState([]);
   const [selectedTab, setSelectedTab] = useState("");
+  const [downloadHistory, setDownloadHistory] = useState([]);
+  const [runningDownloads, setRunningDownloads] = useState([]);
+  const [progress, setProgress] = useState(0);
+  const [ytDlpConfig, setYtDlpConfig] = useState({
+    format: "mp4",
+    quality: "best",
+    subtitles: false,
+  });
 
   const mutation = useMutation({
     mutationFn: async (url) => {
@@ -32,22 +41,35 @@ const Index = () => {
     },
     onSuccess: (data) => {
       setMessage(data);
+      setDownloadHistory((prevHistory) => [...prevHistory, { url, data }]);
+      setRunningDownloads((prevRunning) => prevRunning.filter((item) => item !== url));
       toast("Download complete!");
     },
     onError: (error) => {
       setMessage(`Error: ${error.message}`);
+      setRunningDownloads((prevRunning) => prevRunning.filter((item) => item !== url));
       toast.error("Download failed!");
     },
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setRunningDownloads((prevRunning) => [...prevRunning, url]);
     mutation.mutate(url);
   };
 
   const handleTabSelect = (tabUrl) => {
     setSelectedTab(tabUrl);
+    setRunningDownloads((prevRunning) => [...prevRunning, tabUrl]);
     mutation.mutate(tabUrl);
+  };
+
+  const handleConfigChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setYtDlpConfig((prevConfig) => ({
+      ...prevConfig,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
 
   useEffect(() => {
@@ -65,11 +87,23 @@ const Index = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (mutation.isLoading) {
+      const interval = setInterval(() => {
+        setProgress((prevProgress) => (prevProgress >= 100 ? 0 : prevProgress + 10));
+      }, 1000);
+      return () => clearInterval(interval);
+    } else {
+      setProgress(0);
+    }
+  }, [mutation.isLoading]);
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Download YouTube Videos</CardTitle>
+          {mutation.isLoading && <Progress value={progress} />}
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>
@@ -102,6 +136,55 @@ const Index = () => {
                 ))}
               </SelectContent>
             </Select>
+          </div>
+          <div className="mt-4">
+            <Label>yt-dlp Configuration</Label>
+            <div className="mb-2">
+              <Label htmlFor="format">Format</Label>
+              <Input
+                id="format"
+                name="format"
+                type="text"
+                value={ytDlpConfig.format}
+                onChange={handleConfigChange}
+              />
+            </div>
+            <div className="mb-2">
+              <Label htmlFor="quality">Quality</Label>
+              <Input
+                id="quality"
+                name="quality"
+                type="text"
+                value={ytDlpConfig.quality}
+                onChange={handleConfigChange}
+              />
+            </div>
+            <div className="mb-2">
+              <Label htmlFor="subtitles">Subtitles</Label>
+              <Input
+                id="subtitles"
+                name="subtitles"
+                type="checkbox"
+                checked={ytDlpConfig.subtitles}
+                onChange={handleConfigChange}
+              />
+            </div>
+          </div>
+          <div className="mt-4">
+            <Label>Running Downloads</Label>
+            <ul>
+              {runningDownloads.map((download, index) => (
+                <li key={index}>{download}</li>
+              ))}
+            </ul>
+          </div>
+          <div className="mt-4">
+            <Label>Download History</Label>
+            <ul>
+              {downloadHistory.map((history, index) => (
+                <li key={index}>{history.url}</li>
+              ))}
+            </ul>
           </div>
         </CardContent>
         <CardFooter>
