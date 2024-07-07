@@ -12,15 +12,34 @@ import { cn } from "@/lib/utils";
 import { CircleUser, Menu, Package2 } from "lucide-react";
 import { NavLink, Outlet } from "react-router-dom";
 import { navItems } from "../App";
+import { Switch } from "@/components/ui/switch";
 
 const Layout = () => {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    const darkMode = localStorage.getItem("darkMode") === "true";
+    setIsDarkMode(darkMode);
+    document.documentElement.classList.toggle("dark", darkMode);
+  }, []);
+
+  const toggleDarkMode = () => {
+    setIsDarkMode((prevMode) => {
+      const newMode = !prevMode;
+      localStorage.setItem("darkMode", newMode);
+      document.documentElement.classList.toggle("dark", newMode);
+      return newMode;
+    });
+  };
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       <Sidebar />
       <div className="flex flex-col">
         <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
           <MobileSidebar />
-          <div className="w-full flex-1">{/* Add nav bar content here! */}</div>
+          <div className="w-full flex-1">
+            <Switch checked={isDarkMode} onCheckedChange={toggleDarkMode} />
+          </div>
           <UserDropdown />
         </header>
         <main className="flex-grow p-4 overflow-auto">

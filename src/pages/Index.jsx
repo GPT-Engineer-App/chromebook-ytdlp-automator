@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
+import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 
 const Index = () => {
@@ -12,6 +13,8 @@ const Index = () => {
   const [message, setMessage] = useState("");
   const [tabs, setTabs] = useState([]);
   const [selectedTab, setSelectedTab] = useState("");
+  const [downloadHistory, setDownloadHistory] = useState([]);
+  const [progress, setProgress] = useState(0);
 
   const mutation = useMutation({
     mutationFn: async (url) => {
@@ -33,10 +36,15 @@ const Index = () => {
     onSuccess: (data) => {
       setMessage(data);
       toast("Download complete!");
+      setDownloadHistory((prevHistory) => [...prevHistory, { url, data }]);
+      localStorage.setItem("downloadHistory", JSON.stringify([...downloadHistory, { url, data }]));
     },
     onError: (error) => {
       setMessage(`Error: ${error.message}`);
       toast.error("Download failed!");
+    },
+    onSettled: () => {
+      setProgress(0);
     },
   });
 
@@ -63,6 +71,11 @@ const Index = () => {
         { id: 2, url: "https://www.youtube.com/watch?v=example2", title: "Example Video 2" },
       ]);
     }
+
+    const storedHistory = JSON.parse(localStorage.getItem("downloadHistory"));
+    if (storedHistory) {
+      setDownloadHistory(storedHistory);
+    }
   }, []);
 
   return (
@@ -88,6 +101,7 @@ const Index = () => {
               {mutation.isLoading ? "Downloading..." : "Download"}
             </Button>
           </form>
+          {mutation.isLoading && <Progress value={progress} />}
           <div className="mt-4">
             <Label htmlFor="tabs">Or select an active tab</Label>
             <Select onValueChange={handleTabSelect}>
@@ -107,6 +121,22 @@ const Index = () => {
         <CardFooter>
           {message && <p>{message}</p>}
         </CardFooter>
+      </Card>
+      <Card className="w-full max-w-md mt-4">
+        <CardHeader>
+          <CardTitle>Download History</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ul>
+            {downloadHistory.map((item, index) => (
+              <li key={index}>
+                <a href={item.url} target="_blank" rel="noopener noreferrer">
+                  {item.url}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </CardContent>
       </Card>
     </div>
   );
