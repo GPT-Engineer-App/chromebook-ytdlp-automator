@@ -13,6 +13,7 @@ import { CircleUser, Menu, Package2 } from "lucide-react";
 import { NavLink, Outlet } from "react-router-dom";
 import { navItems } from "../App";
 import { Switch } from "@/components/ui/switch";
+import { useState, useEffect } from "react";
 
 const Layout = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -31,6 +32,7 @@ const Layout = () => {
       return newMode;
     });
   };
+
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       <Sidebar />
