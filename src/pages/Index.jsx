@@ -1,15 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 
 const Index = () => {
   const [url, setUrl] = useState("");
   const [message, setMessage] = useState("");
+  const [tabs, setTabs] = useState([]);
+  const [selectedTab, setSelectedTab] = useState("");
 
   const mutation = useMutation({
     mutationFn: async (url) => {
@@ -43,6 +45,26 @@ const Index = () => {
     mutation.mutate(url);
   };
 
+  const handleTabSelect = (tabUrl) => {
+    setSelectedTab(tabUrl);
+    mutation.mutate(tabUrl);
+  };
+
+  useEffect(() => {
+    // Mock chrome.tabs.query for development
+    if (typeof chrome !== "undefined" && chrome.tabs) {
+      chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+        setTabs(tabs);
+      });
+    } else {
+      // Mock data for development
+      setTabs([
+        { id: 1, url: "https://www.youtube.com/watch?v=example1", title: "Example Video 1" },
+        { id: 2, url: "https://www.youtube.com/watch?v=example2", title: "Example Video 2" },
+      ]);
+    }
+  }, []);
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
       <Card className="w-full max-w-md">
@@ -66,6 +88,21 @@ const Index = () => {
               {mutation.isLoading ? "Downloading..." : "Download"}
             </Button>
           </form>
+          <div className="mt-4">
+            <Label htmlFor="tabs">Or select an active tab</Label>
+            <Select onValueChange={handleTabSelect}>
+              <SelectTrigger id="tabs">
+                <SelectValue placeholder="Select a tab..." />
+              </SelectTrigger>
+              <SelectContent>
+                {tabs.map((tab) => (
+                  <SelectItem key={tab.id} value={tab.url}>
+                    {tab.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </CardContent>
         <CardFooter>
           {message && <p>{message}</p>}
