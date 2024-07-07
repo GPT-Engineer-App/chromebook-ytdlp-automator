@@ -4,7 +4,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Text } from "@/components/ui/text";
+
 import { toast } from "sonner";
 
 const Index = () => {
@@ -68,7 +68,7 @@ const Index = () => {
           </form>
         </CardContent>
         <CardFooter>
-          {message && <Text>{message}</Text>}
+          {message && <p>{message}</p>}
         </CardFooter>
       </Card>
     </div>
