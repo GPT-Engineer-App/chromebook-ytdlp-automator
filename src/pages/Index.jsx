@@ -13,11 +13,7 @@ const Index = () => {
     "YQHsXMglC9A", "OPf0YbXqDm0", "2Vv-BfVoq4g", "JGwWNGJdvx8", "09R8_2nJtjg",
     "3tmd-ClpJxA", "7wtfhZwyrcc", "kJQP7kiw5Fk", "tVj0ZTS4WF4", "60ItHLz5WEA",
     "hT_nvWreIhg", "pRpeEdMmmQ0", "C-u5WLJ9Yk4", "uelHwf8o7_U", "YykjpeuMNEk",
-    "JGwWNGJdvx8", "RgKAFK5djSk", "fJ9rUzIMcZQ", "CevxZvSJLk8", "YQHsXMglC9A",
-    "OPf0YbXqDm0", "2Vv-BfVoq4g", "JGwWNGJdvx8", "09R8_2nJtjg", "3tmd-ClpJxA",
-    "7wtfhZwyrcc", "kJQP7kiw5Fk", "tVj0ZTS4WF4", "60ItHLz5WEA", "hT_nvWreIhg",
-    "pRpeEdMmmQ0", "C-u5WLJ9Yk4", "uelHwf8o7_U", "YykjpeuMNEk", "JGwWNGJdvx8",
-    "RgKAFK5djSk", "fJ9rUzIMcZQ", "CevxZvSJLk8", "YQHsXMglC9A", "OPf0YbXqDm0"
+    "JGwWNGJdvx8", "RgKAFK5djSk", "fJ9rUzIMcZQ", "CevxZvSJLk8", "YQHsXMglC9A"
   ];
 
   useEffect(() => {
