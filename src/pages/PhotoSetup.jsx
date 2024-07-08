@@ -4,17 +4,26 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+
+const mockDetectionResults = [
+  { id: "1", filename: "photo1.jpg", nudityDetected: true, confidence: 0.95 },
+  { id: "2", filename: "photo2.jpg", nudityDetected: false, confidence: 0.10 },
+  { id: "3", filename: "photo3.jpg", nudityDetected: true, confidence: 0.85 },
+];
 
 const PhotoSetup = () => {
   const [apiKey, setApiKey] = useState("");
   const [albumId, setAlbumId] = useState("");
   const [photos, setPhotos] = useState([]);
+  const [detectionResults, setDetectionResults] = useState([]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const photos = await fetchPhotos(apiKey, albumId);
       setPhotos(photos);
+      setDetectionResults(mockDetectionResults); // Use mock data for detection results
       toast("Photos fetched successfully!");
     } catch (error) {
       toast.error("Failed to fetch photos!");
@@ -97,6 +106,14 @@ const PhotoSetup = () => {
                 <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-1">
                   {photo.filename}
                 </div>
+                {detectionResults.find(result => result.id === photo.id) && (
+                  <Alert className="absolute top-0 left-0 right-0 bg-opacity-75">
+                    <AlertTitle>Nudity Detected</AlertTitle>
+                    <AlertDescription>
+                      Confidence: {detectionResults.find(result => result.id === photo.id).confidence * 100}%
+                    </AlertDescription>
+                  </Alert>
+                )}
               </div>
             ))}
           </div>
