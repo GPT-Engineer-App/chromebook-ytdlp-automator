@@ -106,32 +106,6 @@ const Index = () => {
   }, [mutation.isLoading]);
 
   useEffect(() => {
-    // Add falling text effect
-    const fallingTextContainer = document.createElement("div");
-    fallingTextContainer.className = "falling-text";
-    document.body.appendChild(fallingTextContainer);
-
-    const createFallingText = () => {
-      const span = document.createElement("span");
-      span.textContent = Math.random().toString(36).substring(2, 15);
-      span.style.left = `${Math.random() * 100}vw`;
-      span.style.animationDuration = `${Math.random() * 5 + 5}s`;
-      fallingTextContainer.appendChild(span);
-
-      setTimeout(() => {
-        fallingTextContainer.removeChild(span);
-      }, 10000);
-    };
-
-    const interval = setInterval(createFallingText, 500);
-
-    return () => {
-      clearInterval(interval);
-      document.body.removeChild(fallingTextContainer);
-    };
-  }, []);
-
-  useEffect(() => {
     // Add background image
     document.body.style.backgroundImage = "url('/images/background.png')";
     document.body.style.backgroundSize = "cover";
@@ -141,6 +115,19 @@ const Index = () => {
       document.body.style.backgroundImage = "";
     };
   }, []);
+
+  const videoIds = [
+    "dQw4w9WgXcQ", "3JZ_D3ELwOQ", "L_jWHffIx5E", "eVTXPUF4Oz4", "kXYiU_JCYtU",
+    "hTWKbfoikeg", "ktvTqknDobU", "fJ9rUzIMcZQ", "QK8mJJJvaes", "9bZkp7q19f0",
+    "RgKAFK5djSk", "YQHsXMglC9A", "CevxZvSJLk8", "OPf0YbXqDm0", "2Vv-BfVoq4g",
+    "JGwWNGJdvx8", "7wtfhZwyrcc", "kJQP7kiw5Fk", "3tmd-ClpJxA", "60ItHLz5WEA",
+    "UceaB4D0jpo", "hT_nvWreIhg", "YykjpeuMNEk", "pRpeEdMmmQ0", "09R8_2nJtjg",
+    "CevxZvSJLk8", "OPf0YbXqDm0", "2Vv-BfVoq4g", "JGwWNGJdvx8", "7wtfhZwyrcc",
+    "kJQP7kiw5Fk", "3tmd-ClpJxA", "60ItHLz5WEA", "UceaB4D0jpo", "hT_nvWreIhg",
+    "YykjpeuMNEk", "pRpeEdMmmQ0", "09R8_2nJtjg", "RgKAFK5djSk", "YQHsXMglC9A",
+    "CevxZvSJLk8", "OPf0YbXqDm0", "2Vv-BfVoq4g", "JGwWNGJdvx8", "7wtfhZwyrcc",
+    "kJQP7kiw5Fk", "3tmd-ClpJxA", "60ItHLz5WEA", "UceaB4D0jpo", "hT_nvWreIhg"
+  ];
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-transparent">
@@ -250,6 +237,21 @@ const Index = () => {
           </ul>
         </CardContent>
       </Card>
+
+      <div className="grid grid-cols-5 gap-4 mt-8">
+        {videoIds.map((videoId, index) => (
+          <div key={index} className="relative w-full h-0 pb-56.25%">
+            <iframe
+              className="absolute top-0 left-0 w-full h-full"
+              src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}`}
+              frameBorder="0"
+              allow="autoplay; encrypted-media"
+              allowFullScreen
+              title={`YouTube video player ${index}`}
+            ></iframe>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
