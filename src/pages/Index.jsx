@@ -48,6 +48,16 @@ const Index = () => {
       "https://www.youtube.com/embed/2Vv-BfVoq4g",
       "https://www.youtube.com/embed/OPf0YbXqDm0",
       "https://www.youtube.com/embed/60ItHLz5WEA",
+      "https://www.youtube.com/embed/3tmd-ClpJxA",
+      "https://www.youtube.com/embed/2vjPBrBU-TM",
+      "https://www.youtube.com/embed/uelHwf8o7_U",
+      "https://www.youtube.com/embed/ktvTqknDobU",
+      "https://www.youtube.com/embed/9bZkp7q19f0",
+      "https://www.youtube.com/embed/ZZ5LpwO-An4",
+      "https://www.youtube.com/embed/6_b7RDuLwcI",
+      "https://www.youtube.com/embed/2Vv-BfVoq4g",
+      "https://www.youtube.com/embed/OPf0YbXqDm0",
+      "https://www.youtube.com/embed/60ItHLz5WEA",
     ];
     setVideos(videoUrls);
   }, []);
