@@ -75,27 +75,16 @@
     font-family: 'Helvetica', sans-serif;
     background-color: transparent !important; /* Ensure body background is transparent */
   }
-  .falling-text {
+  .aspect-w-16 {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  }
+  .aspect-h-9 {
     position: absolute;
     top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    overflow: hidden;
-    z-index: -1;
-  }
-  .falling-text span {
-    position: absolute;
-    top: -100px;
-    color: rgba(0, 255, 0, 0.7);
-    font-size: 20px;
-    animation: fall linear infinite;
-  }
-  @keyframes fall {
-    0% {
-      transform: translateY(0);
-    }
-    100% {
-      transform: translateY(100vh);
-    }
   }
 }
