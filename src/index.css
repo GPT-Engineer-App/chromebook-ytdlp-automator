@@ -73,7 +73,6 @@
   body {
     @apply bg-background text-foreground;
     font-family: 'Helvetica', sans-serif;
-    background-color: transparent !important; /* Ensure body background is transparent */
     background-image: url('/images/background.png');
     background-size: cover;
     background-repeat: no-repeat;
