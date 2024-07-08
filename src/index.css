@@ -72,7 +72,7 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: 'Helvetica', sans-serif;
+    font-family: 'Arial', sans-serif;
     background-color: transparent !important; /* Ensure body background is transparent */
   }
   .falling-text {
