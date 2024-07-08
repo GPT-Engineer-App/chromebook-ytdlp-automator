@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 10% / 0%; /* Updated to make background transparent */
+    --background: 0 0% 10% / 0%; /* Ensure background transparency is properly applied */
     --foreground: 0 0% 100%;
 
     --card: 0 0% 15%;
@@ -36,7 +36,7 @@
   }
 
   .dark {
-    --background: 0 0% 10% / 0%; /* Updated to make background transparent */
+    --background: 0 0% 10% / 0%; /* Ensure background transparency is properly applied */
     --foreground: 0 0% 100%;
 
     --card: 0 0% 15%;

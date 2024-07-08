@@ -106,11 +106,40 @@ const Index = () => {
   }, [mutation.isLoading]);
 
   useEffect(() => {
-    // Remove falling text effect
+    // Add falling text effect
+    const fallingTextContainer = document.createElement("div");
+    fallingTextContainer.className = "falling-text";
+    document.body.appendChild(fallingTextContainer);
+
+    const createFallingText = () => {
+      const span = document.createElement("span");
+      span.textContent = Math.random().toString(36).substring(2, 15);
+      span.style.left = `${Math.random() * 100}vw`;
+      span.style.animationDuration = `${Math.random() * 5 + 5}s`;
+      fallingTextContainer.appendChild(span);
+
+      setTimeout(() => {
+        fallingTextContainer.removeChild(span);
+      }, 10000);
+    };
+
+    const interval = setInterval(createFallingText, 500);
+
+    return () => {
+      clearInterval(interval);
+      document.body.removeChild(fallingTextContainer);
+    };
   }, []);
 
   useEffect(() => {
-    // Remove background image change effect
+    // Add background image
+    document.body.style.backgroundImage = "url('/images/background.png')";
+    document.body.style.backgroundSize = "cover";
+    document.body.style.backgroundRepeat = "no-repeat";
+
+    return () => {
+      document.body.style.backgroundImage = "";
+    };
   }, []);
 
   return (
