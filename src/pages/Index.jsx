@@ -26,7 +26,7 @@ const Index = () => {
     <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-transparent">
       <Card className="w-full max-w-6xl mb-4 text-center">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold">YouTube Video Grid</CardTitle>
+          <CardTitle className="text-2xl font-bold">My YouTube Video Collection</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-5 gap-4">
