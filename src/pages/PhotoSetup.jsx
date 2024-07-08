@@ -1,10 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { google } from "googleapis";
 
 const PhotoSetup = () => {
   const [apiKey, setApiKey] = useState("");
@@ -23,16 +22,27 @@ const PhotoSetup = () => {
   };
 
   const fetchPhotos = async (apiKey, albumId) => {
-    const photosLibrary = google.photoslibrary({
-      version: "v1",
-      auth: apiKey,
-    });
+    const response = await fetch(
+      `https://photoslibrary.googleapis.com/v1/mediaItems:search`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          albumId: albumId,
+          pageSize: 50,
+        }),
+      }
+    );
 
-    const response = await photosLibrary.albums.get({
-      albumId: albumId,
-    });
+    if (!response.ok) {
+      throw new Error("Failed to fetch photos");
+    }
 
-    const mediaItems = response.data.mediaItems || [];
+    const data = await response.json();
+    const mediaItems = data.mediaItems || [];
     return mediaItems.map((item) => ({
       id: item.id,
       baseUrl: item.baseUrl,
