@@ -75,7 +75,4 @@
     font-family: 'Helvetica', sans-serif;
     background-color: transparent !important; /* Ensure body background is transparent */
   }
-  .falling-text {
-    display: none;
-  }
 }
