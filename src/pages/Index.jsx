@@ -6,7 +6,7 @@ const Index = () => {
   const [videos, setVideos] = useState([]);
 
   useEffect(() => {
-    // Generate a list of unique YouTube video IDs
+    // Generate a list of YouTube video IDs
     const videoIds = [
       "dQw4w9WgXcQ", "3JZ_D3ELwOQ", "L_jWHffIx5E", "eVTXPUF4Oz4", "kXYiU_JCYtU",
       "hTWKbfoikeg", "ktvTqknDobU", "CevxZvSJLk8", "RgKAFK5djSk", "fJ9rUzIMcZQ",
