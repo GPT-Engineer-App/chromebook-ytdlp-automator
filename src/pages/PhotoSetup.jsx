@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Separator } from "@/components/ui/separator";
 
 const mockDetectionResults = [
   { id: "1", filename: "photo1.jpg", nudityDetected: true, confidence: 0.95, category: "High" },
@@ -133,17 +134,45 @@ const PhotoSetup = () => {
           </Tabs>
         </CardContent>
       </Card>
+
+      <Card className="w-full max-w-4xl mb-4">
+        <CardHeader>
+          <CardTitle>Google Authentication Setup Instructions</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <section className="mb-4">
+            <h2 className="text-xl font-bold">Step 1: Create a Project in Google Cloud Console</h2>
+            <p>Go to the <a href="https://console.cloud.google.com/" target="_blank" rel="noopener noreferrer" className="text-blue-500">Google Cloud Console</a> and create a new project or select an existing project.</p>
+          </section>
+          <Separator />
+          <section className="mb-4">
+            <h2 className="text-xl font-bold">Step 2: Enable Necessary APIs</h2>
+            <p>Enable the Google Drive API, Google Photos Library API, and any other necessary APIs for your project.</p>
+          </section>
+          <Separator />
+          <section className="mb-4">
+            <h2 className="text-xl font-bold">Step 3: Create OAuth 2.0 Credentials</h2>
+            <p>Create OAuth 2.0 credentials (Client ID and Client Secret) in the Google Cloud Console.</p>
+          </section>
+          <Separator />
+          <section className="mb-4">
+            <h2 className="text-xl font-bold">Step 4: Set Up OAuth Consent Screen</h2>
+            <p>Set up the OAuth consent screen with the necessary scopes (e.g., https://www.googleapis.com/auth/drive, https://www.googleapis.com/auth/photoslibrary.readonly).</p>
+          </section>
+          <Separator />
+          <section className="mb-4">
+            <h2 className="text-xl font-bold">Step 5: Obtain Access Token</h2>
+            <p>Use the OAuth 2.0 Client ID and Client Secret to obtain an access token. You can use tools like Postman or write a script to get the access token.</p>
+          </section>
+          <Separator />
+          <section className="mb-4">
+            <h2 className="text-xl font-bold">Step 6: Authenticate API Requests</h2>
+            <p>Use the access token to authenticate API requests to the Google Drive API, Google Photos Library API, and other enabled APIs.</p>
+          </section>
+        </CardContent>
+      </Card>
     </div>
   );
 };
 
 export default PhotoSetup;
-
-// Authentication and Access Consent for Google Photos
-// 1. Go to the Google Cloud Console: https://console.cloud.google.com/
-// 2. Create a new project or select an existing project.
-// 3. Enable the Google Photos Library API for your project.
-// 4. Create OAuth 2.0 credentials (Client ID and Client Secret).
-// 5. Set up the OAuth consent screen with the necessary scopes (e.g., https://www.googleapis.com/auth/photoslibrary.readonly).
-// 6. Use the OAuth 2.0 Client ID and Client Secret to obtain an access token.
-// 7. Use the access token to authenticate API requests to the Google Photos Library API.
