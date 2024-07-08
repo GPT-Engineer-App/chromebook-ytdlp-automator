@@ -73,6 +73,7 @@
   body {
     @apply bg-background text-foreground;
     font-family: 'Arial', sans-serif;
+    background-color: var(--background);
   }
   .falling-text {
     position: absolute;
