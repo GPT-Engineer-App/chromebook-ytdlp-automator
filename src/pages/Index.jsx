@@ -20,7 +20,7 @@ const Index = () => {
   const [ytDlpConfig, setYtDlpConfig] = useState({
     format: "mp4",
     quality: "best",
-    subtitles: false,
+    audioOnly: false,
   });
 
   const mutation = useMutation({
@@ -30,7 +30,12 @@ const Index = () => {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
-        body: new URLSearchParams({ url }),
+        body: new URLSearchParams({ 
+          url,
+          format: ytDlpConfig.format,
+          quality: ytDlpConfig.quality,
+          audioOnly: ytDlpConfig.audioOnly,
+        }),
       });
 
       if (!response.ok) {
@@ -161,12 +166,12 @@ const Index = () => {
               />
             </div>
             <div className="mb-2">
-              <Label htmlFor="subtitles">Subtitles</Label>
+              <Label htmlFor="audioOnly">Audio Only</Label>
               <Input
-                id="subtitles"
-                name="subtitles"
+                id="audioOnly"
+                name="audioOnly"
                 type="checkbox"
-                checked={ytDlpConfig.subtitles}
+                checked={ytDlpConfig.audioOnly}
                 onChange={handleConfigChange}
               />
             </div>
