@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
@@ -39,7 +39,7 @@ const Index = () => {
           </div>
         </CardContent>
       </Card>
-      <Separator className="my-4" />
+      
     </div>
   );
 };

@@ -75,15 +75,4 @@
     font-family: 'Helvetica', sans-serif;
     background-color: transparent !important; /* Ensure body background is transparent */
   }
-  .falling-text {
-    display: none;
-  }
-  @keyframes fall {
-    0% {
-      transform: translateY(0);
-    }
-    100% {
-      transform: translateY(100vh);
-    }
-  }
 }
