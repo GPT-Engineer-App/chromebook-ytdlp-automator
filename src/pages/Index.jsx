@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -105,16 +105,16 @@ const Index = () => {
   }, [mutation.isLoading]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4">
-      <Card className="w-full max-w-md mb-4">
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-100">
+      <Card className="w-full max-w-md mb-4 text-center">
         <CardHeader>
-          <CardTitle>Download YouTube Videos</CardTitle>
+          <CardTitle className="text-2xl font-bold">Download YouTube Videos</CardTitle>
           {mutation.isLoading && <Progress value={progress} />}
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
-              <Label htmlFor="url">YouTube URL</Label>
+              <Label htmlFor="url" className="font-bold">YouTube URL</Label>
               <Input
                 id="url"
                 type="text"
@@ -124,14 +124,14 @@ const Index = () => {
                 required
               />
             </div>
-            <Button type="submit" disabled={mutation.isLoading}>
+            <Button type="submit" disabled={mutation.isLoading} className="w-full">
               {mutation.isLoading ? "Downloading..." : "Download"}
             </Button>
           </form>
           <div className="mt-4">
-            <Label htmlFor="tabs">Or select an active tab</Label>
+            <Label htmlFor="tabs" className="font-bold">Or select an active tab</Label>
             <Select onValueChange={handleTabSelect}>
-              <SelectTrigger id="tabs">
+              <SelectTrigger id="tabs" className="w-full">
                 <SelectValue placeholder="Select a tab..." />
               </SelectTrigger>
               <SelectContent>
@@ -144,9 +144,9 @@ const Index = () => {
             </Select>
           </div>
           <div className="mt-4">
-            <Label>yt-dlp Configuration</Label>
+            <Label className="font-bold">yt-dlp Configuration</Label>
             <div className="mb-2">
-              <Label htmlFor="format">Format</Label>
+              <Label htmlFor="format" className="font-bold">Format</Label>
               <Input
                 id="format"
                 name="format"
@@ -156,7 +156,7 @@ const Index = () => {
               />
             </div>
             <div className="mb-2">
-              <Label htmlFor="quality">Quality</Label>
+              <Label htmlFor="quality" className="font-bold">Quality</Label>
               <Input
                 id="quality"
                 name="quality"
@@ -166,7 +166,7 @@ const Index = () => {
               />
             </div>
             <div className="mb-2">
-              <Label htmlFor="audioOnly">Audio Only</Label>
+              <Label htmlFor="audioOnly" className="font-bold">Audio Only</Label>
               <Input
                 id="audioOnly"
                 name="audioOnly"
@@ -178,18 +178,18 @@ const Index = () => {
           </div>
         </CardContent>
         <CardFooter>
-          {message && <p>{message}</p>}
+          {message && <p className="font-bold">{message}</p>}
         </CardFooter>
       </Card>
 
-      <Card className="w-full max-w-md mb-4">
+      <Card className="w-full max-w-md mb-4 text-center">
         <CardHeader>
-          <CardTitle>Running Downloads</CardTitle>
+          <CardTitle className="text-2xl font-bold">Running Downloads</CardTitle>
         </CardHeader>
         <CardContent>
           <ul>
             {runningDownloads.map((download, index) => (
-              <li key={index}>{download}</li>
+              <li key={index} className="font-bold">{download}</li>
             ))}
           </ul>
         </CardContent>
@@ -197,14 +197,14 @@ const Index = () => {
 
       <Separator className="my-4" />
 
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md text-center">
         <CardHeader>
-          <CardTitle>Download History</CardTitle>
+          <CardTitle className="text-2xl font-bold">Download History</CardTitle>
         </CardHeader>
         <CardContent>
           <ul>
             {downloadHistory.map((history, index) => (
-              <li key={index}>{history.url}</li>
+              <li key={index} className="font-bold">{history.url}</li>
             ))}
           </ul>
         </CardContent>
