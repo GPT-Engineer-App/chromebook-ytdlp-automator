@@ -2,6 +2,10 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useMutation } from "@tanstack/react-query";
 
 const Index = () => {
   const [url, setUrl] = useState("");
@@ -61,6 +65,23 @@ const Index = () => {
     "https://www.youtube.com/embed/uelHwf8o7_U",
     "https://www.youtube.com/embed/ktvTqknDobU",
   ];
+
+  const mutation = useMutation({
+    mutationFn: async (url) => {
+      // Your download logic here
+    },
+    onSuccess: () => {
+      toast("Download started!");
+    },
+    onError: () => {
+      toast.error("Failed to start download!");
+    },
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    mutation.mutate(url);
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-transparent">
