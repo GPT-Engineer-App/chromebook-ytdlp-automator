@@ -196,3 +196,12 @@ const DriveSetup = () => {
 };
 
 export default DriveSetup;
+
+// Authentication and Access Consent for Google Drive
+// 1. Go to the Google Cloud Console: https://console.cloud.google.com/
+// 2. Create a new project or select an existing project.
+// 3. Enable the Google Drive API for your project.
+// 4. Create OAuth 2.0 credentials (Client ID and Client Secret).
+// 5. Set up the OAuth consent screen with the necessary scopes (e.g., https://www.googleapis.com/auth/drive).
+// 6. Use the OAuth 2.0 Client ID and Client Secret to obtain an access token.
+// 7. Use the access token to authenticate API requests to the Google Drive API.
