@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 10%;
+    --background: 0 0% 10% / 0%; /* Updated to make background transparent */
     --foreground: 0 0% 100%;
 
     --card: 0 0% 15%;
@@ -36,7 +36,7 @@
   }
 
   .dark {
-    --background: 0 0% 10%;
+    --background: 0 0% 10% / 0%; /* Updated to make background transparent */
     --foreground: 0 0% 100%;
 
     --card: 0 0% 15%;
@@ -73,6 +73,7 @@
   body {
     @apply bg-background text-foreground;
     font-family: 'Arial', sans-serif;
+    background-color: transparent; /* Ensure body background is transparent */
   }
   .falling-text {
     position: absolute;
