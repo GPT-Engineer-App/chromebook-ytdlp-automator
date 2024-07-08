@@ -25,7 +25,7 @@ const Index = () => {
         <CardContent>
           <div className="grid grid-cols-5 gap-4">
             {videoIds.map((videoId, index) => (
-              <div key={index} className="relative w-full h-0 pb-[56.25%] overflow-hidden rounded-lg shadow-lg">
+              <div key={index} className="relative w-full h-0 pb-[56.25%] overflow-hidden rounded-lg shadow-lg animate-pulse">
                 <iframe
                   className="absolute top-0 left-0 w-full h-full"
                   src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}`}
