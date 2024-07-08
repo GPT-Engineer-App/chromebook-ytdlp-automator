@@ -76,26 +76,7 @@
     background-color: transparent !important; /* Ensure body background is transparent */
   }
   .falling-text {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    z-index: -1;
+    display: none;
   }
-  .falling-text span {
-    position: absolute;
-    top: -100px;
-    color: rgba(0, 255, 0, 0.7);
-    font-size: 20px;
-    animation: fall linear infinite;
-  }
-  @keyframes fall {
-    0% {
-      transform: translateY(0);
-    }
-    100% {
-      transform: translateY(100vh);
-    }
-  }
+  
 }
