@@ -8,6 +8,7 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const Index = () => {
   const [url, setUrl] = useState("");
@@ -167,13 +168,16 @@ const Index = () => {
             </div>
             <div className="mb-2">
               <Label htmlFor="audioOnly" className="font-bold">Audio Only</Label>
-              <Input
-                id="audioOnly"
-                name="audioOnly"
-                type="checkbox"
+              <Checkbox
+                className="w-4 h-4 text-black bg-opacity-50 checked:bg-red-500 checked:bg-opacity-50"
                 checked={ytDlpConfig.audioOnly}
-                onChange={handleConfigChange}
-              />
+                onCheckedChange={(checked) => setYtDlpConfig((prevConfig) => ({
+                  ...prevConfig,
+                  audioOnly: checked,
+                }))}
+              >
+                <span className="text-red-500">X</span>
+              </Checkbox>
             </div>
           </div>
         </CardContent>
