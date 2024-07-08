@@ -42,6 +42,7 @@ const Sidebar = () => (
       </div>
       <div className="flex-1">
         <nav className="grid items-start px-2 text-sm font-medium lg:px-4 gap-2">
+          <SidebarNavLink to="/about">About</SidebarNavLink>
           {navItems.map((item) => (
             <SidebarNavLink key={item.to} to={item.to}>
               {item.icon}
@@ -71,6 +72,7 @@ const MobileSidebar = () => (
           <Package2 className="h-6 w-6" />
           <span className="sr-only">Acme Inc</span>
         </NavLink>
+        <SidebarNavLink to="/about">About</SidebarNavLink>
         {navItems.map((item) => (
           <SidebarNavLink key={item.to} to={item.to}>
             {item.title}
