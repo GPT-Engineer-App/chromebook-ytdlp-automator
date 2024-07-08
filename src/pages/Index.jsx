@@ -1,3 +1,4 @@
+```jsx
 import { useState, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,11 +22,12 @@ const Index = () => {
   const [ytDlpConfig, setYtDlpConfig] = useState({
     format: "mp4",
     quality: "best",
+    bitrate: "",
     audioOnly: false,
   });
 
   const mutation = useMutation({
-    mutationFn: async (url) => {
+    mutationFn: async ({ url, format, quality, bitrate, audioOnly }) => {
       const response = await fetch("http://localhost:80", {
         method: "POST",
         headers: {
@@ -33,9 +35,10 @@ const Index = () => {
         },
         body: new URLSearchParams({ 
           url,
-          format: ytDlpConfig.format,
-          quality: ytDlpConfig.quality,
-          audioOnly: ytDlpConfig.audioOnly,
+          format,
+          quality,
+          bitrate,
+          audioOnly,
         }),
       });
 
@@ -62,13 +65,13 @@ const Index = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setRunningDownloads((prevRunning) => [...prevRunning, url]);
-    mutation.mutate(url);
+    mutation.mutate({ url, ...ytDlpConfig });
   };
 
   const handleTabSelect = (tabUrl) => {
     setSelectedTab(tabUrl);
     setRunningDownloads((prevRunning) => [...prevRunning, tabUrl]);
-    mutation.mutate(tabUrl);
+    mutation.mutate({ url: tabUrl, ...ytDlpConfig });
   };
 
   const handleConfigChange = (e) => {
@@ -281,21 +284,41 @@ const Index = () => {
             <Label className="font-bold">yt-dlp Configuration</Label>
             <div className="mb-2">
               <Label htmlFor="format" className="font-bold">Format</Label>
-              <Input
-                id="format"
-                name="format"
-                type="text"
-                value={ytDlpConfig.format}
-                onChange={handleConfigChange}
-              />
+              <Select onValueChange={(value) => setYtDlpConfig((prevConfig) => ({ ...prevConfig, format: value }))}>
+                <SelectTrigger id="format" className="w-full">
+                  <SelectValue placeholder="Select format..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="mp4">MP4</SelectItem>
+                  <SelectItem value="mkv">MKV</SelectItem>
+                  <SelectItem value="webm">WEBM</SelectItem>
+                  <SelectItem value="mp3">MP3</SelectItem>
+                  <SelectItem value="aac">AAC</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div className="mb-2">
               <Label htmlFor="quality" className="font-bold">Quality</Label>
+              <Select onValueChange={(value) => setYtDlpConfig((prevConfig) => ({ ...prevConfig, quality: value }))}>
+                <SelectTrigger id="quality" className="w-full">
+                  <SelectValue placeholder="Select quality..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="best">Best</SelectItem>
+                  <SelectItem value="worst">Worst</SelectItem>
+                  <SelectItem value="1080p">1080p</SelectItem>
+                  <SelectItem value="720p">720p</SelectItem>
+                  <SelectItem value="480p">480p</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="mb-2">
+              <Label htmlFor="bitrate" className="font-bold">Bitrate</Label>
               <Input
-                id="quality"
-                name="quality"
+                id="bitrate"
+                name="bitrate"
                 type="text"
-                value={ytDlpConfig.quality}
+                value={ytDlpConfig.bitrate}
                 onChange={handleConfigChange}
               />
             </div>
@@ -326,28 +349,4 @@ const Index = () => {
         <CardContent>
           <ul>
             {runningDownloads.map((download, index) => (
-              <li key={index} className="font-bold">{download}</li>
-            ))}
-          </ul>
-        </CardContent>
-      </Card>
-
-      <Separator className="my-4" />
-
-      <Card className="w-full max-w-md text-center">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold">Download History</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ul>
-            {downloadHistory.map((history, index) => (
-              <li key={index} className="font-bold">{history.url}</li>
-            ))}
-          </ul>
-        </CardContent>
-      </Card>
-    </div>
-  );
-};
-
-export default Index;
+              <li key={index} className="font-bold
