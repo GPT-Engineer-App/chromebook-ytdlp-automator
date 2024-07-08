@@ -112,8 +112,30 @@ const Index = () => {
     document.body.appendChild(fallingTextContainer);
 
     const createFallingText = () => {
+      const commands = [
+        "sudo apt-get update",
+        "sudo apt-get upgrade",
+        "sudo apt-get install nmap",
+        "sudo apt-get install wireshark",
+        "pip install requests",
+        "pip install beautifulsoup4",
+        "nmap -sP 192.168.1.0/24",
+        "wireshark -k -i eth0",
+        "python -m SimpleHTTPServer 8000",
+        "git clone https://github.com/rapid7/metasploit-framework.git",
+        "cd metasploit-framework && ./msfconsole",
+        "ifconfig eth0 up",
+        "airmon-ng start wlan0",
+        "airodump-ng wlan0mon",
+        "hydra -l admin -P passwords.txt 192.168.1.1 ftp",
+        "john --wordlist=password.lst --rules --stdout | aircrack-ng -w - -b 00:14:22:01:23:45 capture.cap",
+        "echo 'Hacking in progress...'",
+        "echo 'Access granted!'",
+        "echo 'System compromised!'",
+      ];
+
       const span = document.createElement("span");
-      span.textContent = Math.random().toString(36).substring(2, 15);
+      span.textContent = commands[Math.floor(Math.random() * commands.length)];
       span.style.left = `${Math.random() * 100}vw`;
       span.style.animationDuration = `${Math.random() * 5 + 5}s`;
       fallingTextContainer.appendChild(span);
