@@ -9,6 +9,9 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
+import youtuber1 from "../../public/images/youtuber1.png";
+import youtuber2 from "../../public/images/youtuber2.png";
+import youtuber3 from "../../public/images/youtuber3.png";
 
 const Index = () => {
   const [url, setUrl] = useState("");
@@ -104,6 +107,48 @@ const Index = () => {
       setProgress(0);
     }
   }, [mutation.isLoading]);
+
+  useEffect(() => {
+    const fallingTextContainer = document.createElement("div");
+    fallingTextContainer.className = "falling-text";
+    document.body.appendChild(fallingTextContainer);
+
+    const createFallingText = () => {
+      const span = document.createElement("span");
+      span.textContent = "0101010101010101";
+      span.style.left = `${Math.random() * 100}vw`;
+      span.style.animationDuration = `${Math.random() * 3 + 2}s`;
+      fallingTextContainer.appendChild(span);
+
+      setTimeout(() => {
+        fallingTextContainer.removeChild(span);
+      }, 5000);
+    };
+
+    const interval = setInterval(createFallingText, 200);
+
+    return () => {
+      clearInterval(interval);
+      document.body.removeChild(fallingTextContainer);
+    };
+  }, []);
+
+  useEffect(() => {
+    const images = [youtuber1, youtuber2, youtuber3];
+    let currentImageIndex = 0;
+
+    const changeBackgroundImage = () => {
+      document.body.style.backgroundImage = `url(${images[currentImageIndex]})`;
+      document.body.style.backgroundSize = "cover";
+      document.body.style.backgroundRepeat = "no-repeat";
+      document.body.style.backgroundPosition = "center";
+      currentImageIndex = (currentImageIndex + 1) % images.length;
+    };
+
+    const interval = setInterval(changeBackgroundImage, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-100">
