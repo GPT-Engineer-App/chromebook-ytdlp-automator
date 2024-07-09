@@ -23,6 +23,8 @@ const Index = () => {
     quality: "best",
     audioOnly: false,
   });
+  const [previewContent, setPreviewContent] = useState(null);
+  const [buttonState, setButtonState] = useState("Load URL/Tab");
 
   const mutation = useMutation({
     mutationFn: async (url) => {
@@ -51,24 +53,69 @@ const Index = () => {
       setDownloadHistory((prevHistory) => [...prevHistory, { url, data }]);
       setRunningDownloads((prevRunning) => prevRunning.filter((item) => item !== url));
       toast("Download complete!");
+      setButtonState("Load URL/Tab");
+      setPreviewContent(null);
     },
     onError: (error) => {
       setMessage(`Error: ${error.message}`);
       setRunningDownloads((prevRunning) => prevRunning.filter((item) => item !== url));
       toast.error("Download failed!");
+      setButtonState("Load URL/Tab");
     },
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setRunningDownloads((prevRunning) => [...prevRunning, url]);
-    mutation.mutate(url);
+    if (buttonState === "Load URL/Tab") {
+      loadPreview();
+    } else {
+      setRunningDownloads((prevRunning) => [...prevRunning, url]);
+      mutation.mutate(url);
+    }
+  };
+
+  const loadPreview = async () => {
+    try {
+      if (url.includes("youtube.com") || url.includes("youtu.be")) {
+        const videoId = extractYouTubeId(url);
+        if (videoId) {
+          setPreviewContent(
+            <iframe
+              width="560"
+              height="315"
+              src={`https://www.youtube.com/embed/${videoId}`}
+              frameBorder="0"
+              allow="autoplay; encrypted-media"
+              allowFullScreen
+            ></iframe>
+          );
+          setButtonState("Download");
+        } else {
+          throw new Error("Invalid YouTube URL");
+        }
+      } else {
+        // For non-YouTube URLs, you might want to show a different preview or message
+        setPreviewContent(<p>Preview not available for this URL</p>);
+        setButtonState("Download");
+      }
+    } catch (error) {
+      toast.error("Failed to load preview");
+      setPreviewContent(null);
+      setButtonState("Load URL/Tab");
+    }
+  };
+
+  const extractYouTubeId = (url) => {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
   };
 
   const handleTabSelect = (tabUrl) => {
     setSelectedTab(tabUrl);
-    setRunningDownloads((prevRunning) => [...prevRunning, tabUrl]);
-    mutation.mutate(tabUrl);
+    setUrl(tabUrl);
+    setButtonState("Load URL/Tab");
+    setPreviewContent(null);
   };
 
   const handleConfigChange = (e) => {
@@ -159,12 +206,16 @@ const Index = () => {
                 type="text"
                 placeholder="Enter YouTube URL"
                 value={url}
-                onChange={(e) => setUrl(e.target.value)}
+                onChange={(e) => {
+                  setUrl(e.target.value);
+                  setButtonState("Load URL/Tab");
+                  setPreviewContent(null);
+                }}
                 required
               />
             </div>
             <Button type="submit" disabled={mutation.isLoading} className="w-full">
-              {mutation.isLoading ? "Downloading..." : "Download"}
+              {buttonState}
             </Button>
           </form>
           <div className="mt-4">
@@ -223,6 +274,17 @@ const Index = () => {
           {message && <p className="font-bold">{message}</p>}
         </CardFooter>
       </Card>
+
+      {previewContent && (
+        <Card className="w-full max-w-md mb-4 text-center">
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold">Preview</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {previewContent}
+          </CardContent>
+        </Card>
+      )}
 
       <Card className="w-full max-w-md mb-4 text-center">
         <CardHeader>
