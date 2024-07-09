@@ -9,6 +9,8 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Settings } from "lucide-react";
 
 const Index = () => {
   const [url, setUrl] = useState("");
@@ -20,8 +22,11 @@ const Index = () => {
   const [progress, setProgress] = useState(0);
   const [ytDlpConfig, setYtDlpConfig] = useState({
     format: "mp4",
-    quality: "best",
-    audioOnly: false,
+    videoQuality: "best",
+    audioFormat: "mp3",
+    downloadSubtitles: false,
+    downloadThumbnail: false,
+    customArguments: "",
   });
   const [previewContent, setPreviewContent] = useState(null);
   const [buttonState, setButtonState] = useState("Load URL/Tab");
@@ -35,9 +40,7 @@ const Index = () => {
         },
         body: new URLSearchParams({ 
           url,
-          format: ytDlpConfig.format,
-          quality: ytDlpConfig.quality,
-          audioOnly: ytDlpConfig.audioOnly,
+          ...ytDlpConfig,
         }),
       });
 
@@ -94,7 +97,6 @@ const Index = () => {
           throw new Error("Invalid YouTube URL");
         }
       } else {
-        // For non-YouTube URLs, you might want to show a different preview or message
         setPreviewContent(<p>Preview not available for this URL</p>);
         setButtonState("Download");
       }
@@ -118,22 +120,19 @@ const Index = () => {
     setPreviewContent(null);
   };
 
-  const handleConfigChange = (e) => {
-    const { name, value, type, checked } = e.target;
+  const handleConfigChange = (name, value) => {
     setYtDlpConfig((prevConfig) => ({
       ...prevConfig,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: value,
     }));
   };
 
   useEffect(() => {
-    // Mock chrome.tabs.query for development
     if (typeof chrome !== "undefined" && chrome.tabs) {
       chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
         setTabs(tabs);
       });
     } else {
-      // Mock data for development
       setTabs([
         { id: 1, url: "https://www.youtube.com/watch?v=example1", title: "Example Video 1" },
         { id: 2, url: "https://www.youtube.com/watch?v=example2", title: "Example Video 2" },
@@ -153,7 +152,6 @@ const Index = () => {
   }, [mutation.isLoading]);
 
   useEffect(() => {
-    // Add flying fish animation
     const fishImages = ['/images/fish1.png', '/images/fish2.png', '/images/fish3.png'];
     const flyingFishContainer = document.createElement("div");
     flyingFishContainer.className = "flying-fish";
@@ -180,7 +178,6 @@ const Index = () => {
   }, []);
 
   useEffect(() => {
-    // Add background image
     document.body.style.backgroundImage = "url('/images/musical-battlefield.png')";
     document.body.style.backgroundSize = "cover";
     document.body.style.backgroundRepeat = "no-repeat";
@@ -192,6 +189,106 @@ const Index = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-transparent">
+      <div className="absolute top-4 right-4">
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="outline" size="icon">
+              <Settings className="h-4 w-4" />
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Advanced yt-dlp Configuration</DialogTitle>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="format" className="text-right">
+                  Video Format
+                </Label>
+                <Select
+                  value={ytDlpConfig.format}
+                  onValueChange={(value) => handleConfigChange("format", value)}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Select format" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="mp4">MP4</SelectItem>
+                    <SelectItem value="mkv">MKV</SelectItem>
+                    <SelectItem value="webm">WebM</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="videoQuality" className="text-right">
+                  Video Quality
+                </Label>
+                <Select
+                  value={ytDlpConfig.videoQuality}
+                  onValueChange={(value) => handleConfigChange("videoQuality", value)}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Select quality" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="best">Best</SelectItem>
+                    <SelectItem value="worst">Worst</SelectItem>
+                    <SelectItem value="1080p">1080p</SelectItem>
+                    <SelectItem value="720p">720p</SelectItem>
+                    <SelectItem value="480p">480p</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="audioFormat" className="text-right">
+                  Audio Format
+                </Label>
+                <Select
+                  value={ytDlpConfig.audioFormat}
+                  onValueChange={(value) => handleConfigChange("audioFormat", value)}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Select audio format" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="mp3">MP3</SelectItem>
+                    <SelectItem value="aac">AAC</SelectItem>
+                    <SelectItem value="wav">WAV</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="downloadSubtitles"
+                  checked={ytDlpConfig.downloadSubtitles}
+                  onCheckedChange={(checked) => handleConfigChange("downloadSubtitles", checked)}
+                />
+                <Label htmlFor="downloadSubtitles">Download Subtitles</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="downloadThumbnail"
+                  checked={ytDlpConfig.downloadThumbnail}
+                  onCheckedChange={(checked) => handleConfigChange("downloadThumbnail", checked)}
+                />
+                <Label htmlFor="downloadThumbnail">Download Thumbnail</Label>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="customArguments" className="text-right">
+                  Custom Arguments
+                </Label>
+                <Input
+                  id="customArguments"
+                  value={ytDlpConfig.customArguments}
+                  onChange={(e) => handleConfigChange("customArguments", e.target.value)}
+                  className="col-span-3"
+                />
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
+
       <Card className="w-full max-w-md mb-4 text-center">
         <CardHeader>
           <CardTitle className="text-2xl font-bold">Download YouTube Videos</CardTitle>
@@ -232,42 +329,6 @@ const Index = () => {
                 ))}
               </SelectContent>
             </Select>
-          </div>
-          <div className="mt-4">
-            <Label className="font-bold">yt-dlp Configuration</Label>
-            <div className="mb-2">
-              <Label htmlFor="format" className="font-bold">Format</Label>
-              <Input
-                id="format"
-                name="format"
-                type="text"
-                value={ytDlpConfig.format}
-                onChange={handleConfigChange}
-              />
-            </div>
-            <div className="mb-2">
-              <Label htmlFor="quality" className="font-bold">Quality</Label>
-              <Input
-                id="quality"
-                name="quality"
-                type="text"
-                value={ytDlpConfig.quality}
-                onChange={handleConfigChange}
-              />
-            </div>
-            <div className="mb-2">
-              <Label htmlFor="audioOnly" className="font-bold">Audio Only</Label>
-              <Checkbox
-                className="w-4 h-4 text-black bg-opacity-50 checked:bg-red-500 checked:bg-opacity-50"
-                checked={ytDlpConfig.audioOnly}
-                onCheckedChange={(checked) => setYtDlpConfig((prevConfig) => ({
-                  ...prevConfig,
-                  audioOnly: checked,
-                }))}
-              >
-                <span className="text-red-500">X</span>
-              </Checkbox>
-            </div>
           </div>
         </CardContent>
         <CardFooter>
