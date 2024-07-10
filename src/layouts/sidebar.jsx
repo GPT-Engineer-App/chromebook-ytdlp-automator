@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -9,17 +10,20 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-import { CircleUser, Menu, Package2 } from "lucide-react";
+import { CircleUser, Menu, Package2, Settings } from "lucide-react";
 import { NavLink, Outlet } from "react-router-dom";
 import { navItems } from "../App";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Layout = () => {
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
-      <Sidebar />
+      <Sidebar isSettingsOpen={isSettingsOpen} setIsSettingsOpen={setIsSettingsOpen} />
       <div className="flex flex-col">
         <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
-          <MobileSidebar />
+          <MobileSidebar isSettingsOpen={isSettingsOpen} setIsSettingsOpen={setIsSettingsOpen} />
           <div className="w-full flex-1">{/* Add nav bar content here! */}</div>
           <UserDropdown />
         </header>
@@ -31,7 +35,7 @@ const Layout = () => {
   );
 };
 
-const Sidebar = () => (
+const Sidebar = ({ isSettingsOpen, setIsSettingsOpen }) => (
   <div className="hidden border-r bg-muted/40 md:block">
     <div className="flex h-full max-h-screen flex-col gap-2">
       <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
@@ -51,11 +55,27 @@ const Sidebar = () => (
           ))}
         </nav>
       </div>
+      <AnimatePresence>
+        {isSettingsOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.2 }}
+            className="px-4 py-2"
+          >
+            <Button variant="outline" className="w-full" onClick={() => setIsSettingsOpen(false)}>
+              <Settings className="mr-2 h-4 w-4" />
+              Settings
+            </Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   </div>
 );
 
-const MobileSidebar = () => (
+const MobileSidebar = ({ isSettingsOpen, setIsSettingsOpen }) => (
   <Sheet>
     <SheetTrigger asChild>
       <Button variant="outline" size="icon" className="shrink-0 md:hidden">
@@ -79,6 +99,22 @@ const MobileSidebar = () => (
           </SidebarNavLink>
         ))}
       </nav>
+      <AnimatePresence>
+        {isSettingsOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.2 }}
+            className="mt-4"
+          >
+            <Button variant="outline" className="w-full" onClick={() => setIsSettingsOpen(false)}>
+              <Settings className="mr-2 h-4 w-4" />
+              Settings
+            </Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </SheetContent>
   </Sheet>
 );
