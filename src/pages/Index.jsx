@@ -189,11 +189,11 @@ const Index = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-transparent">
-      <div className="absolute top-4 right-4">
+      <div className="fixed bottom-4 right-4">
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="outline" size="icon">
-              <Settings className="h-4 w-4" />
+            <Button variant="outline" size="icon" className="w-12 h-12">
+              <Settings className="h-6 w-6" />
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
