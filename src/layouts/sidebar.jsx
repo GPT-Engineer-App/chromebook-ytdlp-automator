@@ -55,22 +55,27 @@ const Sidebar = ({ isSettingsOpen, setIsSettingsOpen }) => (
           ))}
         </nav>
       </div>
-      <AnimatePresence>
-        {isSettingsOpen && (
+      <div className="mt-auto px-4 py-2 border-t">
+        <UserDropdown />
+        <AnimatePresence>
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
+            exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.2 }}
-            className="px-4 py-2"
+            className="mt-2"
           >
-            <Button variant="outline" className="w-full" onClick={() => setIsSettingsOpen(false)}>
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+            >
               <Settings className="mr-2 h-4 w-4" />
               Settings
             </Button>
           </motion.div>
-        )}
-      </AnimatePresence>
+        </AnimatePresence>
+      </div>
     </div>
   </div>
 );
@@ -99,22 +104,27 @@ const MobileSidebar = ({ isSettingsOpen, setIsSettingsOpen }) => (
           </SidebarNavLink>
         ))}
       </nav>
-      <AnimatePresence>
-        {isSettingsOpen && (
+      <div className="mt-auto">
+        <UserDropdown />
+        <AnimatePresence>
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
+            exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.2 }}
-            className="mt-4"
+            className="mt-2"
           >
-            <Button variant="outline" className="w-full" onClick={() => setIsSettingsOpen(false)}>
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+            >
               <Settings className="mr-2 h-4 w-4" />
               Settings
             </Button>
           </motion.div>
-        )}
-      </AnimatePresence>
+        </AnimatePresence>
+      </div>
     </SheetContent>
   </Sheet>
 );
