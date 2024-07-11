@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Home, User, Settings, HelpCircle, LogOut } from "lucide-react";
+import { Home, User, Settings, HelpCircle, LogOut, List } from "lucide-react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Layout from "./layouts/sidebar";
 import Index from "./pages/Index.jsx";
@@ -14,6 +14,7 @@ import MyAccount from "./pages/MyAccount";
 import SettingsPage from "./pages/Settings";
 import Support from "./pages/Support";
 import LogoutScreen from "./pages/LogoutScreen";
+import Progress from "./pages/Progress";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +40,11 @@ export const navItems = [
     icon: <HelpCircle className="h-4 w-4" />,
   },
   {
+    title: "Progress",
+    to: "/progress",
+    icon: <List className="h-4 w-4" />,
+  },
+  {
     title: "Logout",
     to: "/logout",
     icon: <LogOut className="h-4 w-4" />,
@@ -62,6 +68,7 @@ const App = () => {
               <Route path="/account" element={<MyAccount />} />
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="/support" element={<Support />} />
+              <Route path="/progress" element={<Progress />} />
               <Route path="/logout" element={<LogoutScreen />} />
             </Route>
           </Routes>
