@@ -10,7 +10,6 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Grid } from "@/components/ui/grid";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { motion } from "framer-motion";
@@ -119,7 +118,7 @@ const PhotoSetup = () => {
           </div>
           
           <ScrollArea className="h-[600px] w-full rounded-md border p-4">
-            <Grid className="grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {filteredPhotos.map((photo) => (
                 <motion.div
                   key={photo.id}
@@ -147,12 +146,12 @@ const PhotoSetup = () => {
                   )}
                 </motion.div>
               ))}
-            </Grid>
+            </div>
           </ScrollArea>
         </TabsContent>
         
         <TabsContent value="albums">
-          <Grid className="grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {albums.map((album) => (
               <motion.div
                 key={album.id}
@@ -171,7 +170,7 @@ const PhotoSetup = () => {
                 </div>
               </motion.div>
             ))}
-          </Grid>
+          </div>
         </TabsContent>
       </Tabs>
       
