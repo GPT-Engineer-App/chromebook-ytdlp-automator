@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Home, User, Settings, HelpCircle, LogOut, List } from "lucide-react";
+import { Home, User, Settings, HelpCircle, LogOut, List, Image } from "lucide-react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Layout from "./layouts/sidebar";
 import Index from "./pages/Index.jsx";
@@ -45,6 +45,11 @@ export const navItems = [
     icon: <List className="h-4 w-4" />,
   },
   {
+    title: "Photo Setup",
+    to: "/photosetup",
+    icon: <Image className="h-4 w-4" />,
+  },
+  {
     title: "Logout",
     to: "/logout",
     icon: <LogOut className="h-4 w-4" />,
@@ -62,7 +67,7 @@ const App = () => {
             <Route path="/register" element={<Register />} />
             <Route path="/" element={<Layout />}>
               <Route index element={<Index />} />
-              <Route path="/hidden/photosetup" element={<PhotoSetup />} />
+              <Route path="/photosetup" element={<PhotoSetup />} />
               <Route path="/hidden/drivesetup" element={<DriveSetup />} />
               <Route path="/about" element={<About />} />
               <Route path="/account" element={<MyAccount />} />

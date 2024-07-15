@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -7,6 +8,13 @@ import { toast } from "sonner";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
+import { Slider } from "@/components/ui/slider";
+
+const mockAlbums = [
+  { id: "1", title: "Vacation 2023" },
+  { id: "2", title: "Family Reunion" },
+  { id: "3", title: "Birthday Party" },
+];
 
 const mockDetectionResults = [
   { id: "1", filename: "photo1.jpg", nudityDetected: true, confidence: 0.95, category: "High" },
@@ -15,96 +23,84 @@ const mockDetectionResults = [
   { id: "4", filename: "photo4.jpg", nudityDetected: true, confidence: 0.55, category: "Medium" },
 ];
 
+const fetchAlbums = async () => {
+  // In a real implementation, this would be an API call to Google Photos
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(mockAlbums), 1000);
+  });
+};
+
+const fetchDetectionResults = async (sensitivity) => {
+  // In a real implementation, this would be an API call to your backend
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const filteredResults = mockDetectionResults.filter(
+        (result) => result.confidence >= sensitivity
+      );
+      resolve(filteredResults);
+    }, 1000);
+  });
+};
+
 const PhotoSetup = () => {
-  const [apiKey, setApiKey] = useState("");
-  const [albumId, setAlbumId] = useState("");
-  const [photos, setPhotos] = useState([]);
-  const [detectionResults, setDetectionResults] = useState([]);
+  const [sensitivity, setSensitivity] = useState(0.5);
   const [selectedCategory, setSelectedCategory] = useState("High");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const photos = await fetchPhotos(apiKey, albumId);
-      setPhotos(photos);
-      setDetectionResults(mockDetectionResults); // Use mock data for detection results
-      toast("Photos fetched successfully!");
-    } catch (error) {
-      toast.error("Failed to fetch photos!");
-    }
+  const { data: albums, isLoading: albumsLoading, error: albumsError } = useQuery({
+    queryKey: ['albums'],
+    queryFn: fetchAlbums,
+  });
+
+  const { data: detectionResults, isLoading: resultsLoading, error: resultsError } = useQuery({
+    queryKey: ['detectionResults', sensitivity],
+    queryFn: () => fetchDetectionResults(sensitivity),
+  });
+
+  const handleSensitivityChange = (value) => {
+    setSensitivity(value[0]);
   };
 
-  const fetchPhotos = async (apiKey, albumId) => {
-    const response = await fetch(
-      `https://photoslibrary.googleapis.com/v1/mediaItems:search`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          albumId: albumId,
-          pageSize: 50,
-        }),
-      }
-    );
+  if (albumsLoading || resultsLoading) {
+    return <div>Loading...</div>;
+  }
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch photos");
-    }
+  if (albumsError || resultsError) {
+    return <div>Error: {albumsError?.message || resultsError?.message}</div>;
+  }
 
-    const data = await response.json();
-    const mediaItems = data.mediaItems || [];
-    return mediaItems.map((item) => ({
-      id: item.id,
-      baseUrl: item.baseUrl,
-      filename: item.filename,
-    }));
-  };
-
-  const filteredResults = detectionResults.filter(result => result.category === selectedCategory);
+  const filteredResults = detectionResults?.filter(result => result.category === selectedCategory) || [];
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
       <Card className="w-full max-w-md mb-4">
         <CardHeader>
-          <CardTitle>Google Photos Setup</CardTitle>
+          <CardTitle>Google Photos Albums</CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit}>
-            <div className="mb-4">
-              <Label htmlFor="apiKey">API Key</Label>
-              <Input
-                id="apiKey"
-                type="text"
-                placeholder="Enter your Google Photos API Key"
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <Label htmlFor="albumId">Album ID</Label>
-              <Input
-                id="albumId"
-                type="text"
-                placeholder="Enter your Album ID"
-                value={albumId}
-                onChange={(e) => setAlbumId(e.target.value)}
-                required
-              />
-            </div>
-            <Button type="submit">Fetch Photos</Button>
-          </form>
+          <ul>
+            {albums.map((album) => (
+              <li key={album.id}>{album.title}</li>
+            ))}
+          </ul>
         </CardContent>
       </Card>
 
       <Card className="w-full max-w-4xl">
         <CardHeader>
-          <CardTitle>Photo Library</CardTitle>
+          <CardTitle>Nudity Detection Results</CardTitle>
         </CardHeader>
         <CardContent>
+          <div className="mb-4">
+            <Label htmlFor="sensitivity">Sensitivity: {sensitivity.toFixed(2)}</Label>
+            <Slider
+              id="sensitivity"
+              min={0}
+              max={1}
+              step={0.01}
+              value={[sensitivity]}
+              onValueChange={handleSensitivityChange}
+            />
+          </div>
           <Tabs defaultValue="High" onValueChange={setSelectedCategory}>
             <TabsList>
               <TabsTrigger value="High">High</TabsTrigger>
@@ -115,7 +111,7 @@ const PhotoSetup = () => {
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {filteredResults.map((photo) => (
                   <div key={photo.id} className="relative">
-                    <img src={`${photo.baseUrl}=w200-h200`} alt={photo.filename} className="w-full h-full object-cover rounded-md" />
+                    <img src={`/placeholder.svg`} alt={photo.filename} className="w-full h-full object-cover rounded-md" />
                     <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-1">
                       {photo.filename}
                     </div>
@@ -123,7 +119,7 @@ const PhotoSetup = () => {
                       <Alert className="absolute top-0 left-0 right-0 bg-opacity-75">
                         <AlertTitle>Nudity Detected</AlertTitle>
                         <AlertDescription>
-                          Confidence: {photo.confidence * 100}%
+                          Confidence: {(photo.confidence * 100).toFixed(2)}%
                         </AlertDescription>
                       </Alert>
                     )}
@@ -135,7 +131,7 @@ const PhotoSetup = () => {
         </CardContent>
       </Card>
 
-      <Card className="w-full max-w-4xl mb-4">
+      <Card className="w-full max-w-4xl mt-4">
         <CardHeader>
           <CardTitle>Google Authentication Setup Instructions</CardTitle>
         </CardHeader>
@@ -147,7 +143,7 @@ const PhotoSetup = () => {
           <Separator />
           <section className="mb-4">
             <h2 className="text-xl font-bold">Step 2: Enable Necessary APIs</h2>
-            <p>Enable the Google Drive API, Google Photos Library API, and any other necessary APIs for your project.</p>
+            <p>Enable the Google Photos Library API and Google Cloud Vision API for your project.</p>
           </section>
           <Separator />
           <section className="mb-4">
@@ -157,17 +153,17 @@ const PhotoSetup = () => {
           <Separator />
           <section className="mb-4">
             <h2 className="text-xl font-bold">Step 4: Set Up OAuth Consent Screen</h2>
-            <p>Set up the OAuth consent screen with the necessary scopes (e.g., https://www.googleapis.com/auth/drive, https://www.googleapis.com/auth/photoslibrary.readonly).</p>
+            <p>Set up the OAuth consent screen with the necessary scopes (e.g., https://www.googleapis.com/auth/photoslibrary.readonly).</p>
           </section>
           <Separator />
           <section className="mb-4">
-            <h2 className="text-xl font-bold">Step 5: Obtain Access Token</h2>
-            <p>Use the OAuth 2.0 Client ID and Client Secret to obtain an access token. You can use tools like Postman or write a script to get the access token.</p>
+            <h2 className="text-xl font-bold">Step 5: Implement Google OAuth</h2>
+            <p>Use the OAuth 2.0 flow to authenticate users and obtain access tokens for the Google Photos Library API.</p>
           </section>
           <Separator />
           <section className="mb-4">
-            <h2 className="text-xl font-bold">Step 6: Authenticate API Requests</h2>
-            <p>Use the access token to authenticate API requests to the Google Drive API, Google Photos Library API, and other enabled APIs.</p>
+            <h2 className="text-xl font-bold">Step 6: Integrate with Backend</h2>
+            <p>Set up your backend to handle OAuth token exchange, Google Photos API requests, and Google Cloud Vision API for nudity detection.</p>
           </section>
         </CardContent>
       </Card>
