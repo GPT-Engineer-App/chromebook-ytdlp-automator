@@ -16,10 +16,10 @@ import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 
 const mockPhotos = [
-  { id: "1", url: "/images/photo1.jpg", filename: "photo1.jpg", nudityDetected: true, confidence: 0.95, category: "Severe" },
-  { id: "2", url: "/images/photo2.jpg", filename: "photo2.jpg", nudityDetected: false, confidence: 0.10, category: "Mild" },
-  { id: "3", url: "/images/photo3.jpg", filename: "photo3.jpg", nudityDetected: true, confidence: 0.85, category: "Severe" },
-  { id: "4", url: "/images/photo4.jpg", filename: "photo4.jpg", nudityDetected: true, confidence: 0.55, category: "Moderate" },
+  { id: "1", filename: "photo1.jpg", nudityDetected: true, confidence: 0.95, category: "Severe" },
+  { id: "2", filename: "photo2.jpg", nudityDetected: false, confidence: 0.10, category: "Mild" },
+  { id: "3", filename: "photo3.jpg", nudityDetected: true, confidence: 0.85, category: "Severe" },
+  { id: "4", filename: "photo4.jpg", nudityDetected: true, confidence: 0.55, category: "Moderate" },
 ];
 
 const fetchPhotos = async (sensitivity) => {
@@ -188,11 +188,9 @@ const PhotoCard = ({ photo, onSelect, isSelected }) => (
     whileHover={{ scale: 1.05 }}
     whileTap={{ scale: 0.95 }}
   >
-    <img
-      src={photo.url}
-      alt={photo.filename}
-      className="w-full h-40 object-cover rounded-md"
-    />
+    <div className="w-full h-40 bg-gray-200 rounded-md flex items-center justify-center">
+      <span className="text-gray-500">{photo.filename}</span>
+    </div>
     <Checkbox
       checked={isSelected}
       onCheckedChange={() => onSelect(photo.id)}
