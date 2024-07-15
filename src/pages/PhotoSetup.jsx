@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { motion } from "framer-motion";
+import { Badge } from "@/components/ui/badge";
 
 const mockAlbums = [
   { id: "1", title: "Vacation 2023", coverPhotoUrl: "/images/vacation.jpg", itemCount: 120 },
@@ -44,10 +45,39 @@ const fetchPhotos = async (sensitivity) => {
   });
 };
 
+const tagPhotos = async () => {
+  // Simulating API call to tag photos
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const taggedPhotos = mockPhotos.map(photo => ({
+        ...photo,
+        tags: ['person', 'outdoor', 'nature'].sort(() => Math.random() - 0.5).slice(0, 2)
+      }));
+      resolve(taggedPhotos);
+    }, 1500);
+  });
+};
+
+const categorizePhotos = async () => {
+  // Simulating API call to categorize photos
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const categories = {
+        'person': mockPhotos.filter(() => Math.random() > 0.5),
+        'outdoor': mockPhotos.filter(() => Math.random() > 0.5),
+        'nature': mockPhotos.filter(() => Math.random() > 0.5),
+      };
+      resolve(categories);
+    }, 1500);
+  });
+};
+
 const PhotoSetup = () => {
   const [sensitivity, setSensitivity] = useState(0.5);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedPhotos, setSelectedPhotos] = useState([]);
+  const [taggedPhotos, setTaggedPhotos] = useState([]);
+  const [categories, setCategories] = useState({});
 
   const { data: albums, isLoading: albumsLoading, error: albumsError } = useQuery({
     queryKey: ['albums'],
@@ -57,6 +87,28 @@ const PhotoSetup = () => {
   const { data: photos, isLoading: photosLoading, error: photosError } = useQuery({
     queryKey: ['photos', sensitivity],
     queryFn: () => fetchPhotos(sensitivity),
+  });
+
+  const tagPhotosMutation = useMutation({
+    mutationFn: tagPhotos,
+    onSuccess: (data) => {
+      setTaggedPhotos(data);
+      toast.success("Photos tagged successfully!");
+    },
+    onError: () => {
+      toast.error("Failed to tag photos");
+    },
+  });
+
+  const categorizePhotosMutation = useMutation({
+    mutationFn: categorizePhotos,
+    onSuccess: (data) => {
+      setCategories(data);
+      toast.success("Photos categorized successfully!");
+    },
+    onError: () => {
+      toast.error("Failed to categorize photos");
+    },
   });
 
   const handleSensitivityChange = (value) => {
@@ -91,6 +143,8 @@ const PhotoSetup = () => {
         <TabsList>
           <TabsTrigger value="photos">Photos</TabsTrigger>
           <TabsTrigger value="albums">Albums</TabsTrigger>
+          <TabsTrigger value="tagged">Tagged Photos</TabsTrigger>
+          <TabsTrigger value="categories">Categories</TabsTrigger>
         </TabsList>
         
         <TabsContent value="photos">
@@ -171,6 +225,72 @@ const PhotoSetup = () => {
               </motion.div>
             ))}
           </div>
+        </TabsContent>
+
+        <TabsContent value="tagged">
+          <Button 
+            onClick={() => tagPhotosMutation.mutate()} 
+            disabled={tagPhotosMutation.isLoading}
+            className="mb-4"
+          >
+            {tagPhotosMutation.isLoading ? "Tagging..." : "Tag Photos"}
+          </Button>
+          <ScrollArea className="h-[600px] w-full rounded-md border p-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {taggedPhotos.map((photo) => (
+                <motion.div
+                  key={photo.id}
+                  className="relative"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <img
+                    src={photo.url}
+                    alt={photo.filename}
+                    className="w-full h-40 object-cover rounded-md"
+                  />
+                  <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-2 rounded-b-md">
+                    {photo.tags.map((tag, index) => (
+                      <Badge key={index} variant="secondary" className="mr-1 mb-1">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </ScrollArea>
+        </TabsContent>
+
+        <TabsContent value="categories">
+          <Button 
+            onClick={() => categorizePhotosMutation.mutate()} 
+            disabled={categorizePhotosMutation.isLoading}
+            className="mb-4"
+          >
+            {categorizePhotosMutation.isLoading ? "Categorizing..." : "Categorize Photos"}
+          </Button>
+          {Object.entries(categories).map(([category, photos]) => (
+            <div key={category} className="mb-4">
+              <h3 className="text-xl font-bold mb-2">{category}</h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {photos.map((photo) => (
+                  <motion.div
+                    key={photo.id}
+                    className="relative"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <img
+                      src={photo.url}
+                      alt={photo.filename}
+                      className="w-full h-40 object-cover rounded-md"
+                    />
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          ))}
         </TabsContent>
       </Tabs>
       
