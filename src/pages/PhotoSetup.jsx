@@ -93,6 +93,20 @@ const PhotoSetup = () => {
     toast.success(`Downloading ${selectedPhotos.length} images`);
   };
 
+  useEffect(() => {
+    document.body.style.backgroundImage = "url('/images/photo-setup-background.png')";
+    document.body.style.backgroundSize = "cover";
+    document.body.style.backgroundRepeat = "no-repeat";
+    document.body.style.backgroundAttachment = "fixed";
+
+    return () => {
+      document.body.style.backgroundImage = "";
+      document.body.style.backgroundSize = "";
+      document.body.style.backgroundRepeat = "";
+      document.body.style.backgroundAttachment = "";
+    };
+  }, []);
+
   if (photosLoading) {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
   }
@@ -103,81 +117,86 @@ const PhotoSetup = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">Nudity Detection Categories</h1>
-      
-      <div className="mb-4">
-        <Label htmlFor="sensitivity" className="mb-2 block">Sensitivity: {sensitivity.toFixed(2)}</Label>
-        <Slider
-          id="sensitivity"
-          min={0}
-          max={1}
-          step={0.01}
-          value={[sensitivity]}
-          onValueChange={handleSensitivityChange}
-          className="w-full"
-        />
-      </div>
-      
-      <Tabs defaultValue="All" className="mb-6">
-        <TabsList>
-          <TabsTrigger value="All" onClick={() => setSelectedCategory("All")}>All</TabsTrigger>
-          <TabsTrigger value="Mild" onClick={() => setSelectedCategory("Mild")}>Mild</TabsTrigger>
-          <TabsTrigger value="Moderate" onClick={() => setSelectedCategory("Moderate")}>Moderate</TabsTrigger>
-          <TabsTrigger value="Severe" onClick={() => setSelectedCategory("Severe")}>Severe</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="All">
-          <ScrollArea className="h-[600px] w-full rounded-md border p-4">
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {filteredPhotos.map((photo) => (
-                <PhotoCard key={photo.id} photo={photo} onSelect={handlePhotoSelect} isSelected={selectedPhotos.includes(photo.id)} />
-              ))}
-            </div>
-          </ScrollArea>
-        </TabsContent>
-        
-        {["Mild", "Moderate", "Severe"].map((category) => (
-          <TabsContent key={category} value={category}>
-            <ScrollArea className="h-[600px] w-full rounded-md border p-4">
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {categories[category]?.map((photo) => (
-                  <PhotoCard key={photo.id} photo={photo} onSelect={handlePhotoSelect} isSelected={selectedPhotos.includes(photo.id)} />
-                ))}
-              </div>
-            </ScrollArea>
-          </TabsContent>
-        ))}
-      </Tabs>
-      
-      <div className="mt-4 flex justify-between items-center">
-        <Button onClick={() => categorizePhotosMutation.mutate()} disabled={categorizePhotosMutation.isLoading}>
-          {categorizePhotosMutation.isLoading ? "Categorizing..." : "Categorize Photos"}
-        </Button>
-        <Button onClick={handleBulkDownload} disabled={selectedPhotos.length === 0}>
-          Download Selected ({selectedPhotos.length})
-        </Button>
-      </div>
+      <Card className="bg-white bg-opacity-90 backdrop-blur-sm">
+        <CardHeader>
+          <CardTitle className="text-3xl font-bold mb-6">Nudity Detection Categories</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="mb-4">
+            <Label htmlFor="sensitivity" className="mb-2 block">Sensitivity: {sensitivity.toFixed(2)}</Label>
+            <Slider
+              id="sensitivity"
+              min={0}
+              max={1}
+              step={0.01}
+              value={[sensitivity]}
+              onValueChange={handleSensitivityChange}
+              className="w-full"
+            />
+          </div>
+          
+          <Tabs defaultValue="All" className="mb-6">
+            <TabsList>
+              <TabsTrigger value="All" onClick={() => setSelectedCategory("All")}>All</TabsTrigger>
+              <TabsTrigger value="Mild" onClick={() => setSelectedCategory("Mild")}>Mild</TabsTrigger>
+              <TabsTrigger value="Moderate" onClick={() => setSelectedCategory("Moderate")}>Moderate</TabsTrigger>
+              <TabsTrigger value="Severe" onClick={() => setSelectedCategory("Severe")}>Severe</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="All">
+              <ScrollArea className="h-[600px] w-full rounded-md border p-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {filteredPhotos.map((photo) => (
+                    <PhotoCard key={photo.id} photo={photo} onSelect={handlePhotoSelect} isSelected={selectedPhotos.includes(photo.id)} />
+                  ))}
+                </div>
+              </ScrollArea>
+            </TabsContent>
+            
+            {["Mild", "Moderate", "Severe"].map((category) => (
+              <TabsContent key={category} value={category}>
+                <ScrollArea className="h-[600px] w-full rounded-md border p-4">
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {categories[category]?.map((photo) => (
+                      <PhotoCard key={photo.id} photo={photo} onSelect={handlePhotoSelect} isSelected={selectedPhotos.includes(photo.id)} />
+                    ))}
+                  </div>
+                </ScrollArea>
+              </TabsContent>
+            ))}
+          </Tabs>
+          
+          <div className="mt-4 flex justify-between items-center">
+            <Button onClick={() => categorizePhotosMutation.mutate()} disabled={categorizePhotosMutation.isLoading}>
+              {categorizePhotosMutation.isLoading ? "Categorizing..." : "Categorize Photos"}
+            </Button>
+            <Button onClick={handleBulkDownload} disabled={selectedPhotos.length === 0}>
+              Download Selected ({selectedPhotos.length})
+            </Button>
+          </div>
 
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button variant="outline" className="mt-4">Setup Instructions</Button>
-        </DialogTrigger>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>Google Authentication Setup Instructions</DialogTitle>
-          </DialogHeader>
-          <ScrollArea className="h-[300px] w-full rounded-md border p-4">
-            <ol className="list-decimal pl-4 space-y-2">
-              <li>Create a Project in Google Cloud Console</li>
-              <li>Enable Google Photos Library API</li>
-              <li>Create OAuth 2.0 Credentials</li>
-              <li>Set Up OAuth Consent Screen</li>
-              <li>Implement Google OAuth Flow</li>
-              <li>Integrate with Backend for API Requests</li>
-            </ol>
-          </ScrollArea>
-        </DialogContent>
-      </Dialog>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline" className="mt-4">Setup Instructions</Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-md">
+              <DialogHeader>
+                <DialogTitle>Google Authentication Setup Instructions</DialogTitle>
+              </DialogHeader>
+              <ScrollArea className="h-[300px] w-full rounded-md border p-4">
+                <ol className="list-decimal pl-4 space-y-2">
+                  <li>Create a Project in Google Cloud Console</li>
+                  <li>Enable Google Photos Library API</li>
+                  <li>Create OAuth 2.0 Credentials</li>
+                  <li>Set Up OAuth Consent Screen</li>
+                  <li>Implement Google OAuth Flow</li>
+                  <li>Integrate with Backend for API Requests</li>
+                </ol>
+              </ScrollArea>
+            </DialogContent>
+          </Dialog>
+        </CardContent>
+      </Card>
     </div>
   );
 };
