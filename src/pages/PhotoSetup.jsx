@@ -23,6 +23,25 @@ const mockDetectionResults = [
   { id: "4", filename: "photo4.jpg", nudityDetected: true, confidence: 0.55, category: "Medium" },
 ];
 
+const fetchAlbums = async () => {
+  // In a real implementation, this would be an API call to Google Photos
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(mockAlbums), 1000);
+  });
+};
+
+const fetchDetectionResults = async (sensitivity) => {
+  // In a real implementation, this would be an API call to your backend
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const filteredResults = mockDetectionResults.filter(
+        (result) => result.confidence >= sensitivity
+      );
+      resolve(filteredResults);
+    }, 1000);
+  });
+};
+
 const PhotoSetup = () => {
   const [sensitivity, setSensitivity] = useState(0.5);
   const [selectedCategory, setSelectedCategory] = useState("High");
@@ -39,25 +58,6 @@ const PhotoSetup = () => {
 
   const handleSensitivityChange = (value) => {
     setSensitivity(value[0]);
-  };
-
-  const fetchAlbums = async () => {
-    // In a real implementation, this would be an API call to Google Photos
-    return new Promise((resolve) => {
-      setTimeout(() => resolve(mockAlbums), 1000);
-    });
-  };
-
-  const fetchDetectionResults = async (sensitivity) => {
-    // In a real implementation, this would be an API call to your backend
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const filteredResults = mockDetectionResults.filter(
-          (result) => result.confidence >= sensitivity
-        );
-        resolve(filteredResults);
-      }, 1000);
-    });
   };
 
   if (albumsLoading || resultsLoading) {
